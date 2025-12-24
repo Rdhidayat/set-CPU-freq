@@ -1,0 +1,275 @@
+#!/system/bin/sh
+
+alertd() { echo " - done" ; }
+GREEN='\e[01;32m'
+RED='\e[01;31m'
+YELLOW='\e[01;33m'
+BLUE='\e[01;34m'
+VIOLET='\e[01;35m'
+BLACK='\e[01;30m'
+CYAN='\e[01;36m'
+WHITE='\e[01;37m'
+BGBL='\e[1;30;47m'
+N='\e[0m'
+K='\e[00;37;40m'
+
+database=/storage/emulated/0/!run-service/database
+checkkr='/sys/module/cpu_input_boost'
+default(){ sh $database/1default ; }
+costum(){ sh $database/1costum ; }
+fc(){ am force-stop $1 ; }
+oky(){
+echo " - done "
+}
+cnc(){
+echo " - cancel "
+}
+errs(){
+echo "${RED} = Error Sellected ${N}"
+}
+Kernel_Default() {
+database=/storage/emulated/0/!run-service/database
+checkfreq=`cat /sys/class/kgsl/kgsl-3d0/max_pwrlevel`
+checkcg=`cat /sys/class/power_supply/battery/constant_charge_current_max`
+checkcfgc=`cat /sys/devices/system/cpu/cpu_boost/sched_boost_on_input`
+fc(){ am force-stop $1 ; }
+oky(){
+echo " - done "
+}
+cnc(){
+echo " - cancel "
+}
+errs(){
+echo "${RED} = Error Sellected ${N}"
+}
+powercfg(){ sh $database/powercfg ; }
+ctrCharging(){ sh $database/ctrCharging ; }
+clean(){ sh $database/clean ; }
+
+checking() {
+if [[ ! "$checkfreq" = "8" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = Limit_freq"
+echo "   GPU = 205mHz"
+fi
+if [[ ! "$checkfreq" = "7" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = Limit_freq"
+echo "   GPU = 305mHz"
+fi
+if [[ ! "$checkfreq" = "6" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = Limit_freq"
+echo "   GPU = 355mHz"
+fi
+if [[ ! "$checkfreq" = "5" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = Limit_freq"
+echo "   GPU = 435mHz"
+fi
+if [[ ! "$checkfreq" = "4" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = Limit_freq"
+echo "   GPU = 495mHz"
+fi
+if [[ ! "$checkfreq" = "3" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = Limit_freq"
+echo "   GPU = 543mHz"
+fi
+if [[ ! "$checkfreq" = "2" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = Limit_freq"
+echo "   GPU = 593mHz"
+fi
+if [[ ! "$checkfreq" = "1" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = Limit_freq"
+echo "   GPU = 633mHz"
+fi
+if [[ ! "$checkfreq" = "0" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = Max_freq"
+echo "   GPU = 683mHz"
+fi
+
+if [[ ! "$checkcfgc" = "0" ]]; then
+echo " - Mode = Performance (Warning use cooler)"
+else
+echo " - Mode = Default"
+fi
+
+if [[ ! "$checkcg" = "6000000" ]]; then
+echo " - Charging Limit_input"
+echo "   ${checkcg}mAh"
+else
+echo " - Charging Max_input"
+echo "   ${checkcg}mAh"
+fi
+}
+
+mainmenu() {
+echo ''
+echo ' --checking--'
+echo ''
+checking 
+echo ""
+echo " Toolkit Kernel Default"
+printf "
+  1. Set cpu & gpu freq
+  2. Cntrl charging
+  3. Cleaning cache
+
+ 0. cancel
+ \n#? "
+   read -n 1 targettm
+   case $targettm in
+    1) powercfg ;;
+    2) ctrCharging ;;
+    3) clean ;;
+    0) echo '' ;;
+    *) errs ;;
+    esac
+    }
+    
+mainmenu
+
+}
+Kernel_Costum(){
+database=/storage/emulated/0/!run-service/database
+checkfreq=`cat /sys/class/kgsl/kgsl-3d0/max_pwrlevel`
+checkcg=`cat /sys/class/power_supply/battery/constant_charge_current_max`
+checkcfgc=`cat /sys/module/cpu_input_boost/parameters/input_boost_freq_prime`
+checkfreqcpu=`cat /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq`
+rate_limit_us=`cat /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us`
+fc(){ am force-stop $1 ; }
+oky(){
+echo " - done "
+}
+cnc(){
+echo " - cancel "
+}
+errs(){
+echo "${RED} = Error Sellected ${N}"
+}
+powercfg(){ sh $database/powercfg2 ; }
+ctrCharging(){ sh $database/ctrCharging ; }
+clean(){ sh $database/clean ; }
+
+checking() {
+if [[ ! "$checkfreq" = "8" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = $checkfreqcpu"
+echo "   GPU = 205mHz"
+fi
+if [[ ! "$checkfreq" = "7" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = $checkfreqcpu"
+echo "   GPU = 305mHz"
+fi
+if [[ ! "$checkfreq" = "6" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = $checkfreqcpu"
+echo "   GPU = 355mHz"
+fi
+if [[ ! "$checkfreq" = "5" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = $checkfreqcpu"
+echo "   GPU = 435mHz"
+fi
+if [[ ! "$checkfreq" = "4" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = $checkfreqcpu"
+echo "   GPU = 495mHz"
+fi
+if [[ ! "$checkfreq" = "3" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = $checkfreqcpu"
+echo "   GPU = 543mHz"
+fi
+if [[ ! "$checkfreq" = "2" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = $checkfreqcpu"
+echo "   GPU = 593mHz"
+fi
+if [[ ! "$checkfreq" = "1" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = $checkfreqcpu"
+echo "   GPU = 633mHz"
+fi
+if [[ ! "$checkfreq" = "0" ]]; then
+echo "" &> /dev/null
+else
+echo " - CPU = $checkfreqcpu"
+echo "   GPU = 683mHz"
+fi
+
+if [[ ! "$checkcfgc" = "0" ]]; then
+echo " - rate_limit_us = $rate_limit_us"
+echo " - Mode = Performance (Warning use cooler)"
+else
+echo " - rate_limit_us = $rate_limit_us"
+echo " - Mode = Default"
+fi
+
+if [[ ! "$checkcg" = "6000000" ]]; then
+echo " - Charging Limit_input"
+echo "   ${checkcg}mAh"
+else
+echo " - Charging Max_input"
+echo "   ${checkcg}mAh"
+fi
+}
+
+mainmenu() {
+echo ''
+echo ' --checking--'
+echo ''
+checking 
+echo ""
+echo " Toolkit Kernel Costum"
+printf "
+  1. Set cpu & gpu freq
+  2. Cntrl charging
+  3. Cleaning cache
+
+ 0. cancel
+ \n#? "
+   read -n 1 targettm
+   case $targettm in
+    1) powercfg ;;
+    2) ctrCharging ;;
+    3) clean ;;
+    0) echo '' ;;
+    *) errs ;;
+    esac
+    }
+    
+mainmenu
+
+}
+#main
+echo " >>> check kernel <<<"
+sleep 1
+if [ -d $checkkr ]; then
+Kernel_Costum
+  else
+Kernel_Default
+  fi
