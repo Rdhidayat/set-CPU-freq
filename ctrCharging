@@ -1,0 +1,57 @@
+#!/system/bin/sh
+
+maxmA() {
+chmod 644 /sys/class/power_supply/battery/constant_charge_current_max
+chmod 644 /sys/class/power_supply/battery/constant_charge_current
+echo 6000000 > /sys/class/power_supply/battery/constant_charge_current_max
+echo 6000000 > /sys/class/power_supply/battery/constant_charge_current
+chmod 444 /sys/class/power_supply/battery/constant_charge_current_max
+chmod 444 /sys/class/power_supply/battery/constant_charge_current
+}
+limitmA() {
+chmod 644 /sys/class/power_supply/battery/constant_charge_current
+chmod 644 /sys/class/power_supply/battery/constant_charge_current_max
+echo 5300000 > /sys/class/power_supply/battery/constant_charge_current
+echo 5300000 > /sys/class/power_supply/battery/constant_charge_current_max
+chmod 444 /sys/class/power_supply/battery/constant_charge_current
+chmod 444 /sys/class/power_supply/battery/constant_charge_current_max
+}
+lowmA() {
+chmod 644 /sys/class/power_supply/battery/constant_charge_current
+chmod 644 /sys/class/power_supply/battery/constant_charge_current_max
+echo 1500000 > /sys/class/power_supply/battery/constant_charge_current
+echo 1500000 > /sys/class/power_supply/battery/constant_charge_current_max
+chmod 444 /sys/class/power_supply/battery/constant_charge_current
+chmod 444 /sys/class/power_supply/battery/constant_charge_current_max
+}
+alertd() {
+echo " - done "
+printf " > set max charging "
+pwrinfo
+}
+pwrinfo() {
+cat /sys/class/power_supply/battery/constant_charge_current_max
+}
+
+mainmenu() {
+echo ""
+echo " - set mAh charging "
+printf "max charging "
+pwrinfo
+printf "
+ 1. max 6000mAh
+ 2. limit 5300mAh
+ 3. Night Mode 1500mAh
+ 0. cancel
+ \n#? "
+   read -n 1 targettm
+   case $targettm in
+    1) maxmA && alertd ;;
+    2) limitmA && alertd ;;
+    3) lowmA && alertd ;;
+    0) echo '' ;;
+    *) errs ;;
+    esac
+    }
+
+mainmenu
